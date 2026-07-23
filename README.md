@@ -1,5 +1,7 @@
 # RootCause
 
+[![CI](https://github.com/minhngo149/RootCause/actions/workflows/ci.yml/badge.svg)](https://github.com/minhngo149/RootCause/actions/workflows/ci.yml)
+
 > Find the root cause, not the symptoms.
 
 RootCause is a CLI production-diagnosis tool. It runs deterministic rules
@@ -10,19 +12,28 @@ Rule First. Knowledge First. AI Second.
 
 ## Status
 
-Early, pre-release (`v0.1.0-dev`). Currently supports SQL text analysis with
-2 rules (`SQL001` avoid `SELECT *`, `SQL002` `UPDATE`/`DELETE` without
-`WHERE`) and 3 knowledge articles. See [docs/](docs/) for the full roadmap,
-risk assessment, and release plan.
+Early, pre-release (`v0.1.0-dev`, no tagged version yet). Currently supports
+SQL text analysis with 2 rules (`SQL001` avoid `SELECT *`, `SQL002`
+`UPDATE`/`DELETE` without `WHERE`) and 3 knowledge articles. See
+[docs/](docs/) for the full roadmap, risk assessment, and release plan.
 
-## Build from source
+## Install
 
 ```bash
+go install github.com/minhngo149/RootCause/cmd/rootcause@latest
+```
+
+Or build from source:
+
+```bash
+git clone git@github.com:minhngo149/RootCause.git
+cd RootCause
 go build -o bin/rootcause ./cmd/rootcause
 ```
 
-(No tagged release yet — see [docs/10-cli-release-plan.md](docs/10-cli-release-plan.md)
-for the plan to ship `go install` / Homebrew / binary downloads.)
+Homebrew tap and standalone binary downloads are planned once there's a
+tagged release — see
+[docs/10-cli-release-plan.md](docs/10-cli-release-plan.md) (Giai đoạn 2).
 
 ## Usage
 
