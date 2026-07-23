@@ -12,7 +12,7 @@ import (
 func newDoctorCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "doctor <file>",
-		Short: "Diagnose a single SQL file, query log, or EXPLAIN output",
+		Short: "Diagnose a single file: SQL, a query log/EXPLAIN dump, or a Go source file",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runDoctor(cmd, args[0])
@@ -26,7 +26,12 @@ func runDoctor(cmd *cobra.Command, file string) error {
 		return fmt.Errorf("cannot read %s: %w", file, err)
 	}
 
-	violations, docs, err := diagnose(string(data))
+	d, err := newDiagnosis()
+	if err != nil {
+		return err
+	}
+
+	violations, err := d.diagnoseFile(file, data)
 	if err != nil {
 		return err
 	}
@@ -39,7 +44,7 @@ func runDoctor(cmd *cobra.Command, file string) error {
 
 	fmt.Fprintf(out, "%s — %d issue(s) found:\n\n", file, len(violations))
 	for _, v := range violations {
-		render.Violation(out, v, docs)
+		render.Violation(out, v, d.docs)
 	}
 	return nil
 }
