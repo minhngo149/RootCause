@@ -13,9 +13,11 @@ Rule First. Knowledge First. AI Second.
 ## Status
 
 Early, pre-release (`v0.1.0-dev`, no tagged version yet). Currently supports
-SQL and Go source analysis with 2 rules (`SQL001` avoid `SELECT *`,
-`SQL002` `UPDATE`/`DELETE` without `WHERE`) and 3 knowledge articles. See
-[docs/](docs/) for the full roadmap, risk assessment, and release plan.
+SQL and Go source analysis with 4 rules — SQL (`SQL001` avoid `SELECT *`,
+`SQL002` `UPDATE`/`DELETE` without `WHERE`) and MongoDB (`MONGO001`
+`DeleteMany`/`UpdateMany` with an empty filter, `MONGO002` use of `$where`)
+— and 5 knowledge articles. See [docs/](docs/) for the full roadmap, risk
+assessment, and release plan.
 
 ## Install
 
@@ -69,16 +71,28 @@ rootcause learn
 (Replace `rootcause` with `./bin/rootcause` in the commands above if you
 built from source instead of using `go install`.)
 
-`review` currently understands `.sql` files and `.go` files. Go support
-extracts the first string-literal argument of calls to well-known database
-methods (`Query`, `Exec`, `Prepare`, sqlx's `Get`/`Select`, gorm's `Raw`,
-...) — see [internal/analyzer/golang.go](internal/analyzer/golang.go).
+`review` currently understands `.sql` files and `.go` files. In Go source,
+two kinds of calls are recognized:
+
+- SQL: the first string-literal argument of well-known database methods
+  (`Query`, `Exec`, `Prepare`, sqlx's `Get`/`Select`, gorm's `Raw`, ...).
+- MongoDB: the filter/update argument of `*mongo.Collection` methods
+  (`Find`, `DeleteMany`, `UpdateMany`, ...), assuming the driver's
+  idiomatic `Method(ctx, filter, ...)` shape. Since Mongo filters are Go
+  composite literals (`bson.M{...}`) rather than strings, this argument is
+  rendered back to source text (via `go/printer`) so the same regex-based
+  rules can pattern-match on it — see
+  [internal/analyzer/golang.go](internal/analyzer/golang.go).
+
 Queries built via string concatenation or passed in as a variable aren't
 detected yet; this is a deliberate scope limit, not an oversight (real
 type/data-flow analysis is a much larger effort — see the SQL dialect
 fragmentation discussion in [docs/09-risks.md](docs/09-risks.md)). More
 languages are added by registering a new extractor in
-[internal/analyzer/analyzer.go](internal/analyzer/analyzer.go).
+[internal/analyzer/analyzer.go](internal/analyzer/analyzer.go); more query
+engines (beyond SQL and MongoDB) are added by dropping a YAML file under
+[rules/](rules/) plus a knowledge article under
+[knowledge/](knowledge/) — no engine code changes needed.
 
 Example:
 

@@ -1,0 +1,17 @@
+id: MONGO001
+name: DeleteMany or UpdateMany with an empty filter
+severity: high
+
+detect:
+  type: regex
+  pattern: '(?i)^(deletemany|updatemany)\(bson\.(m|d)\{\}\)$'
+
+knowledge:
+  - mongodb-empty-filter
+
+recommendation:
+  - Pass a filter that targets only the documents you actually intend to change.
+  - >-
+    If clearing the entire collection is genuinely intentional, make that
+    explicit (a named helper function, or a comment) so reviewers and this
+    tool can tell it apart from a mistake.

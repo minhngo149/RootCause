@@ -53,3 +53,50 @@ func TestExtractGoInvalidSource(t *testing.T) {
 		t.Error("expected a parse error for invalid Go source, got nil")
 	}
 }
+
+const mongoSample = `package db
+
+func purgeSessions(sessions *mongo.Collection, ctx context.Context) {
+	sessions.DeleteMany(ctx, bson.M{})
+}
+
+func purgeExpired(sessions *mongo.Collection, ctx context.Context, cutoff time.Time) {
+	sessions.DeleteMany(ctx, bson.M{"expired_at": bson.M{"$lt": cutoff}})
+}
+
+func activeUsers(users *mongo.Collection, ctx context.Context) {
+	users.Find(ctx, bson.M{"status": "active"})
+}
+
+func noContext(sessions *mongo.Collection) {
+	sessions.DeleteMany(bson.M{})
+}
+`
+
+func TestExtractGoMongo(t *testing.T) {
+	queries, err := ExtractGo("sample.go", []byte(mongoSample))
+	if err != nil {
+		t.Fatalf("ExtractGo() error = %v", err)
+	}
+
+	// noContext's DeleteMany(bson.M{}) has only one argument, so it does not
+	// match the assumed (ctx, filter, ...) shape and is skipped.
+	if len(queries) != 3 {
+		t.Fatalf("expected 3 extracted queries, got %d: %+v", len(queries), queries)
+	}
+
+	if queries[0].Text != "DeleteMany(bson.M{})" {
+		t.Errorf("queries[0].Text = %q", queries[0].Text)
+	}
+	if queries[0].Line != 4 {
+		t.Errorf("queries[0].Line = %d, want 4", queries[0].Line)
+	}
+
+	if queries[1].Text != `DeleteMany(bson.M{"expired_at": bson.M{"$lt": cutoff}})` {
+		t.Errorf("queries[1].Text = %q", queries[1].Text)
+	}
+
+	if queries[2].Text != `Find(bson.M{"status": "active"})` {
+		t.Errorf("queries[2].Text = %q", queries[2].Text)
+	}
+}

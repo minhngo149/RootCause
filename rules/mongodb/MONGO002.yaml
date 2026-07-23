@@ -1,0 +1,17 @@
+id: MONGO002
+name: Use of the $where operator
+severity: medium
+
+detect:
+  type: regex
+  pattern: '(?i)\$where'
+
+knowledge:
+  - mongodb-where-operator
+
+recommendation:
+  - Replace $where with native query operators, or $expr for cross-field comparisons.
+  - >-
+    $where runs JavaScript once per document, so it cannot use an index and
+    does not parallelize — and if the expression is built from string
+    concatenation, it is a NoSQL injection risk.

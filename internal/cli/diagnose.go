@@ -17,7 +17,7 @@ type diagnosis struct {
 }
 
 func newDiagnosis() (*diagnosis, error) {
-	rules, err := ruleengine.Load(rootcause.RulesFS, "rules/sql")
+	rules, err := ruleengine.Load(rootcause.RulesFS, "rules")
 	if err != nil {
 		return nil, fmt.Errorf("loading rules: %w", err)
 	}
