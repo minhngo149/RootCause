@@ -1,0 +1,15 @@
+id: SQL001
+name: Avoid SELECT *
+severity: medium
+
+detect:
+  type: regex
+  pattern: '(?i)select\s+\*\s+from'
+
+knowledge:
+  - execution-plan
+  - covering-index
+
+recommendation:
+  - Specify only the columns your application actually needs.
+  - Adding explicit columns lets the query use a covering index instead of falling back to a table lookup.

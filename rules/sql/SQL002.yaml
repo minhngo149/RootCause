@@ -1,0 +1,18 @@
+id: SQL002
+name: UPDATE or DELETE without WHERE clause
+severity: high
+
+detect:
+  type: statement_missing_keyword
+  statement_starts_with: [update, delete]
+  requires_keyword: where
+
+knowledge:
+  - missing-where-clause
+
+recommendation:
+  - Add an explicit WHERE clause, even if you intend to affect every row.
+  - >-
+    If a full-table UPDATE/DELETE is intentional, mark it with a comment such
+    as "-- intentional: full table reset" so reviewers and this tool can tell
+    it apart from a mistake.

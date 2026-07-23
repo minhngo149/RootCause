@@ -1,0 +1,33 @@
+# See docs/10-cli-release-plan.md (Giai đoạn 2) for the distribution plan
+# this config exists to support. Not wired to a release workflow yet —
+# only used locally / once the project is ready to cut v0.1.0.
+version: 2
+
+builds:
+  - main: ./cmd/rootcause
+    binary: rootcause
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
