@@ -29,7 +29,15 @@ Or build from source:
 git clone git@github.com:minhngo149/RootCause.git
 cd RootCause
 go build -o bin/rootcause ./cmd/rootcause
+./bin/rootcause learn   # run it with ./bin/ — it isn't on your PATH yet
 ```
+
+`go build -o bin/rootcause` only creates the binary at `bin/rootcause`; it does
+not put it on your `PATH`, so a bare `rootcause` command will not be found.
+Either keep invoking it as `./bin/rootcause`, or move/symlink it onto your
+`PATH` (e.g. `sudo mv bin/rootcause /usr/local/bin/`). `go install` (above)
+does not have this problem — it places the binary in `$(go env GOPATH)/bin`,
+which is usually already on `PATH`.
 
 Homebrew tap and standalone binary downloads are planned once there's a
 tagged release — see
@@ -50,6 +58,9 @@ rootcause explain covering-index
 # Browse the knowledge base
 rootcause learn
 ```
+
+(Replace `rootcause` with `./bin/rootcause` in the commands above if you
+built from source instead of using `go install`.)
 
 Example:
 
