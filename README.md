@@ -16,8 +16,8 @@ Early, pre-release (`v0.1.0-dev`, no tagged version yet). Currently supports
 SQL and Go source analysis with 4 rules — SQL (`SQL001` avoid `SELECT *`,
 `SQL002` `UPDATE`/`DELETE` without `WHERE`) and MongoDB (`MONGO001`
 `DeleteMany`/`UpdateMany` with an empty filter, `MONGO002` use of `$where`)
-— and 5 knowledge articles. See [docs/](docs/) for the full roadmap, risk
-assessment, and release plan.
+— and 77 knowledge articles across 10 sections (see below). See
+[docs/](docs/) for the full roadmap, risk assessment, and release plan.
 
 ## Install
 
@@ -108,6 +108,19 @@ query.sql — 1 issue(s) found:
   Why: Execution Plan -> rootcause explain execution-plan
   Why: Covering Index -> rootcause explain covering-index
 ```
+
+## Knowledge base
+
+`knowledge/` is organized into 10 sections: `database` (15, plus MongoDB
+and rule-linked safety articles), `distributed-systems` (15), `backend`,
+`cache`, `engineering`, `kubernetes`, `observability`, `security` (6 each),
+`docker` (4), and `roadmap` (4, career-level guides rather than technical
+concepts). Every article follows the same 12-part template — Problem,
+Pain Points, Solution, How It Works, Production Architecture, Trade-offs,
+Best Practices, Common Mistakes, Interview Questions, Summary, Knowledge
+Graph, Five Things To Remember — plus YAML front matter (`id`, `title`,
+`tags`) so `rootcause explain <id>` and rule `knowledge:` links can find it.
+Browse everything with `rootcause learn`.
 
 ## Project structure
 
